@@ -2,6 +2,7 @@ package com.mj.deliveryboyapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -24,7 +25,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     public Context mContext;
     Myhomedata[] myhomedata;
     Homefragment context;
-
+    String userloc ="Mumbai";
+    String resloc ="Thane";
     public HomeAdapter(Context context, Myhomedata[] myhomedata) {
         this.myhomedata = myhomedata;
         mContext = context;
@@ -37,6 +39,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         View view = layoutInflater.inflate(R.layout.noticard,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
+        
     }
 
     @Override
@@ -49,11 +52,26 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent fp=new Intent(mContext.getApplicationContext(),Gmap.class);
-                mContext.startActivity(fp);
+              DisplayTrack(userloc,resloc);
             }
         });
 
+    }
+
+    private void DisplayTrack(String userloc, String resloc) {
+        try {
+            Uri uri = Uri.parse("https://www.google.co.in/maps/dir/" + userloc + "/" + resloc);
+            Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+            intent.setPackage("com.google.android.apps.maps");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+        }
+        catch(ActivityNotFoundException e){
+            Uri uri = Uri.parse("https://play.google.com/store/apps/details?id=com.google.android.apps.maps");
+            Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+        }
     }
 
     @Override
